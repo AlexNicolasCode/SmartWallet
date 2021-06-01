@@ -1,6 +1,6 @@
 import { useState, ReactNode, createContext, Dispatch, useContext, useEffect, SetStateAction } from "react";
 import { nodeModuleNameResolver } from "typescript";
-import { UserMensage } from "../../components/styles/mensage
+import { UserMensage } from '../../components/styles/styles'
 
 type MapMensagesData = {
     msg: string;

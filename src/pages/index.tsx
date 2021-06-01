@@ -2,7 +2,7 @@ import { useCreateAccount } from '../contexts/create-account/CreateAccount'
 // import { GetProps } from '../components/getProps'
 import { useLogin } from '../contexts/login/login'
 import { useMensages } from '../contexts/mapMensages/mapMensages'
-import { H1, Chat, DefaultMensage, Input, ButtonSend, OptionsBtn, Sender } from '../components/styles/mensage
+import { H1, Chat, DefaultMensage, Input, ButtonSend, OptionsBtn, Sender } from '../components/styles/styles'
 // import styles from '../styles/Home.module.css'
 
 export default function Home() {
