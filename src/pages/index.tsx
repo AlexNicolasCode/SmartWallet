@@ -1,20 +1,41 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { useContext, useState } from 'react'
-import { GetProps } from '../components/getProps'
-import { useMensages } from '../contexts/mapMensages'
+import { useCreateAccount } from '../contexts/create-account/CreateAccount'
+// import { GetProps } from '../components/getProps'
+import { useLogin } from '../contexts/login/login'
+import { useMensages } from '../contexts/mapMensages/mapMensages'
+import { H1, Chat, DefaultMensage, Input, ButtonSend, OptionsBtn, Sender } from '../components/styles/mensage
 // import styles from '../styles/Home.module.css'
 
 export default function Home() {
-  const { msg, allMsg, setMsg, addNewMensage } = useMensages()
+  const { msg, allMsg, setMsg, addNewMensage, inputMsg, error, errorMensage } = useMensages()
+  const { AccountLogin } = useLogin()
+  const { CreateNewAccount } = useCreateAccount()
 
   return (
     <div>
-      {allMsg.map((prop, index) => (
-        <li key={index}>{prop}</li>
-      ))}
-      <input type="text" value={msg} onChange={event => setMsg(event.target.value)}/>
-      <button type="submit" onClick={addNewMensage}>Send</button>
+      <header>
+        <H1><strong>Smart</strong>Wallet</H1>
+      </header>
+      <main>
+        <Chat>
+          <DefaultMensage>Hi, I'm SmartCoin</DefaultMensage>
+          <DefaultMensage>
+            <OptionsBtn onClick={AccountLogin}>Login</OptionsBtn>
+            <OptionsBtn onClick={CreateNewAccount}>Create Account</OptionsBtn>
+          </DefaultMensage>
+          {allMsg.map((prop, index) => (
+            <DefaultMensage key={index}>{prop}</DefaultMensage>
+          ))}
+        </Chat>
+        <Sender>
+          <Input type={inputMsg} value={msg} onChange={event => setMsg(event.target.value)}/>
+          <ButtonSend type="submit" onClick={addNewMensage}>Send</ButtonSend>
+        </Sender>
+      </main>
+      <footer>
+        { error && 
+          <span>{errorMensage}</span>
+        }
+      </footer>
     </div>
   )
 }
