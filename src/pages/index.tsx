@@ -2,14 +2,12 @@ import { useCreateAccount } from '../contexts/CreateAccount'
 import { useLogin } from '../contexts/login'
 import { useMensages } from '../contexts/mapMensages'
 import { H1, Chat, DefaultMensage, Input, ButtonSend, OptionsBtn, Sender } from '../components/styles/styles'
-import { useMenu } from '../contexts/Menu'
 // import styles from '../styles/Home.module.css'
 
 export default function Home() {
   const { msg, allMsg, setMsg, addNewMensage, inputMsg, error, errorMensage } = useMensages()
   const { AccountLogin } = useLogin()
   const { CreateNewAccount } = useCreateAccount()
-  const { MenuBase } = useMenu()
 
   return (
     <div>
@@ -22,7 +20,6 @@ export default function Home() {
           <DefaultMensage>
             <OptionsBtn onClick={AccountLogin}>Login</OptionsBtn>
             <OptionsBtn onClick={CreateNewAccount}>Create Account</OptionsBtn>
-            <OptionsBtn onClick={MenuBase}>Menu</OptionsBtn>
           </DefaultMensage>
           {allMsg.map((prop, index) => (
             <DefaultMensage key={index}>{prop}</DefaultMensage>

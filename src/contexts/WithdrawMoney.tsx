@@ -1,4 +1,5 @@
 import { createContext, Dispatch, ReactNode, useContext, useEffect, useState } from "react";
+import { Menu } from "../components/Menu/Menu";
 import { useMensages } from "../contexts/mapMensages";
 import { api } from "../pages/api/api";
 
@@ -28,7 +29,8 @@ export const WithdrawMoneyProvider = ({ children }: WithdrawMoneyProps) => {
                 .then(res => {     
                     setAllMsg([
                         allMsg,
-                        `${res.coinIcon} ${msg} was been withdraw of your wallet`,
+                        `${user.coinIcon} ${msg} was been withdraw of your wallet`,
+                        <Menu />
                     ])
                     setInputMsg("text")
                 })

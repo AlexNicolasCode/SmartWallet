@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { useMensages } from "./mapMensages";
+import { Menu } from "../components/Menu/Menu";
 
 type CreateAccountData = {
     CreateNewAccount: () => void;
@@ -49,7 +50,8 @@ export const CreateAccountProvider = ({ children }: CreateAccountProps) => {
         setInputMsg('text')
         setAllMsg([
             ...allMsg,
-            "Your account was been created"
+            "Your account was been created",
+            <Menu />
         ])
         setMsg('')
     }

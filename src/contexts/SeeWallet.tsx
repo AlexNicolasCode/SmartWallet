@@ -1,4 +1,5 @@
 import { createContext, Dispatch, ReactNode, useContext, useEffect, useState } from "react";
+import { Menu } from "../components/Menu/Menu";
 import { useMensages } from "../contexts/mapMensages";
 import { api } from "../pages/api/api";
 
@@ -23,6 +24,7 @@ export const WalletProvider = ({ children }: WalletProps) => {
                 setAllMsg([
                     allMsg,
                     `Do have you ${res.coinIcon} ${res.wallet}`,
+                    <Menu />
                 ])
             })
 

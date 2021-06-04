@@ -1,6 +1,6 @@
 import { createContext, Dispatch, ReactNode, useContext, useEffect, useState } from "react";
 import { useMensages } from "./mapMensages";
-import { useMenu } from "./Menu";
+import { Menu } from "../components/Menu/Menu";
 
 type LoginData = {
     AccountLogin: () => void;
@@ -39,7 +39,8 @@ export const LoginProvider = ({ children }: LoginProps) => {
         setMsg('')
         setAllMsg([
             ...allMsg,
-            "Welcome"
+            "Welcome",
+            <Menu />
         ])
         setInputMsg('text');
     }
@@ -50,7 +51,7 @@ export const LoginProvider = ({ children }: LoginProps) => {
             setEmailLogin(msg)
             setAllMsg([
                 ...allMsg,
-                "What's your password?"
+                "What's your password?",
             ])
             setError(false)
             setMsg('')
