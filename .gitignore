@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 
+# storybook
+.storybook
+/src/stories
+
 # testing
 /coverage
 
