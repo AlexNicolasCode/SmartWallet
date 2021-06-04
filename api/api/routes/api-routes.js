@@ -13,7 +13,7 @@ var controler = require('../controllers/Controller');
 router.route('/users')
     .get(controler.index)
     .post(controler.new);
-router.route('/users/:user_id')
+router.route('/users/:user_email')
     .get(controler.view)
     .patch(controler.update)
     .put(controler.update)

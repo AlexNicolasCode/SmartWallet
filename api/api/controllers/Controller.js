@@ -1,8 +1,8 @@
+require('dotenv').config();
 const crypto = require('crypto');
 const mongoose = require('mongoose');
-const uri = "mongodb-server";
+const uri = process.env.URI;
 const express = require('express');
-const app = express();
 
 mongoose.connect(uri, {  useNewUrlParser: true, useUnifiedTopology: true })
 
@@ -13,13 +13,11 @@ if(!db)
 else
     console.log("Db connected successfully")
 
-    
-// Import contact model
+// Import user model
 const User = require('../models/UserModel');
-const userProp = new User();
 // Handle index actions
-exports.index = function (req, res) {
-    User.get(function (err, contacts) {
+exports.index = (req, res) => {
+    User.get((err, result) => {
         if (err) {
             res.json({
                 status: "error",
@@ -28,76 +26,117 @@ exports.index = function (req, res) {
         }
         res.json({
             status: "success",
-            message: "Contacts retrieved successfully",
-            data: contacts
-        });
-    });
-};
-// Handle create contact actions
-exports.new = function (req, res) {
-    const password_hash = crypto.createHash('sha512').update(req.body.password).digest("hex")
-    userProp.firstName = req.body.firstName;
-    userProp.lastName = req.body.lastName;
-    userProp.email = req.body.email;
-    userProp.password = password_hash;
-    
-    userProp.create((err, result) => {
-        if (err) {
-            console.log(err)
-            throw err;
-        } else {
-            res.json({
-                message: 'New user created!',
-                data: userProp
-            });
-            console.log(result.ops)
-            console.log("saved in db")
-        }
-    })
-};
-// Handle view contact info
-exports.view = function (req, res) {
-    User.findById(req.params.user_id, (err, result) => {
-        if (err) console.log(err);
-        console.log(result)
-        res.json({
-            message: 'Contact details loading..',
+            message: "Users retrieved successfully",
             data: result
         });
     });
 };
-// Handle update contact info
-exports.update = function (req, res) {
-let password_hash = crypto.createHash('md5').update(req.body.password).digest("hex")
-    User.findById(req.params.user_id, function (err, contact) {
-        if (err)
-            res.send(err);
-        userProp.firstName = req.body.firstName ? req.body.firstName : contact.firstName;
-        userProp.lastName = req.body.lastName;
-        userProp.email = req.body.email;
-        userProp.password = password_hash;
-        userProp.wallet = req.body.wallet;
-        // save the contact and check for errors
-        userProp.save(function (err) {
-            if (err)
-                res.json(err);
-            res.json({
-                message: 'Contact Info updated',
-                data: userProp
-            });
-        });
+// Handle create user actions
+exports.new = function (req, res) {
+    User.find({email: req.body.email}, (err, result) => {
+        if (err) console.log(err);
+        const password_hash = crypto.createHash('sha512').update(req.body.password).digest("hex");
+        if (!result[0]) {         
+            const dataUser = {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                password: password_hash
+            }
+        
+            User.create(dataUser, (err, result) => {
+                if (err) {
+                    console.log(err)
+                    throw err;
+                } else {
+                    res.json({
+                        message: 'New user created!',
+                        data: dataUser
+                    });
+                    console.log(result)
+                    console.log("saved in db")
+                }
+            })
+        } else {
+            res.send({
+                message: "this email already been used"
+            })
+        }
     });
 };
-// Handle delete contact
-exports.delete = function (req, res) {
-    User.deleteOne({
-        _id: req.params.user_id
-    }, function (err, contact) {
-        if (err)
-            res.send(err);
+// Handle view user info
+exports.view = function (req, res) {
+    User.find({email: req.params.user_email}, (err, result) => {
+        if (err) console.log(err);
+
+        if (!result[0]) {
             res.json({
-            status: "success",
-            message: 'Contact deleted'
-        });
+                message: "Not found"
+            })
+        } else {
+            let password_hash = crypto.createHash('sha512').update(req.body.password).digest("hex")
+            const dataUser = {
+                email: result[0].email,
+                password: result[0].password
+            }            
+            if (password_hash == result[0].password && req.body.email == result[0].email) {
+                res.json({
+                    message: 'user authenticated',
+                    data: dataUser
+                });
+            } else {
+                res.send({
+                    message: "user invalid"
+                })
+            }
+        }
+    });
+};
+// Handle update user info
+exports.update = function (req, res) {
+    User.find({email: req.params.user_email}, function (err, result) {
+        if (err) res.send(err);
+        if (!result[0]) {
+            res.json({
+                message: "Not found"
+            })
+        } else {
+            let password_hash = crypto.createHash('sha512').update(req.body.password).digest("hex")
+            const dataUser = {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                password: password_hash
+            }
+            // save the user and check for errors
+            User.create(dataUser, (err) => {
+                    if (err)
+                        res.json(err);
+                    res.json({
+                        message: 'User Info updated',
+                        data: dataUser
+                    });
+                });
+            }
+            User.deleteOne({email: req.params.user_email}, () => {});
+    });
+};
+// Handle delete user
+exports.delete = function (req, res) {
+    User.find({email: req.params.user_email}, function (err, result) {
+        let password_hash = crypto.createHash('sha512').update(req.body.password).digest("hex")
+        if (err) res.send(err);
+        if (!result[0]) {
+            res.json({
+                message: "Not found"
+            })
+        } else if (password_hash == result[0].password && req.body.email == result[0].email) {
+            User.deleteOne({email: req.params.user_email}, () => {
+                res.json({
+                status: "success",
+                message: 'User deleted'
+                });
+            });
+        }
     });
 };
