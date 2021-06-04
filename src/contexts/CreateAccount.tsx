@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { useMensages } from "../mapMensages/mapMensages";
+import { useMensages } from "./mapMensages";
 
 type CreateAccountData = {
     CreateNewAccount: () => void;

@@ -1,5 +1,6 @@
 import { createContext, Dispatch, ReactNode, useContext, useEffect, useState } from "react";
-import { useMensages } from "../mapMensages/mapMensages";
+import { useMensages } from "./mapMensages";
+import { useMenu } from "./Menu";
 
 type LoginData = {
     AccountLogin: () => void;
@@ -40,7 +41,7 @@ export const LoginProvider = ({ children }: LoginProps) => {
             ...allMsg,
             "Welcome"
         ])
-        setInputMsg('text')
+        setInputMsg('text');
     }
 
     const passwordAccountLogin = () => {
@@ -95,7 +96,6 @@ export const LoginProvider = ({ children }: LoginProps) => {
         }}>
             {children}
         </Login.Provider>
-
     )
 }
 
