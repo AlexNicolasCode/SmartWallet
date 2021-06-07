@@ -2,7 +2,6 @@ require('dotenv').config();
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const uri = process.env.URI;
-const express = require('express');
 
 mongoose.connect(uri, {  useNewUrlParser: true, useUnifiedTopology: true })
 
@@ -35,13 +34,16 @@ exports.index = (req, res) => {
 exports.new = function (req, res) {
     User.find({email: req.body.email}, (err, result) => {
         if (err) console.log(err);
-        const password_hash = crypto.createHash('sha512').update(req.body.password).digest("hex");
         if (!result[0]) {         
+            const password_hash = crypto.createHash('sha512').update(req.body.password).digest("hex");
             const dataUser = {
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
-                password: password_hash
+                password: password_hash,
+                wallet: req.body.wallet,
+                transactions: {},
+                date: new Date
             }
         
             User.create(dataUser, (err, result) => {
@@ -59,26 +61,26 @@ exports.new = function (req, res) {
             })
         } else {
             res.send({
-                message: "this email already been used"
+                message: "this user already been used"
             })
         }
     });
 };
 // Handle view user info
 exports.view = function (req, res) {
-    User.find({email: req.params.user_email}, (err, result) => {
+    User.find({email: req.params.user_email}, async (err, result) => {
+        console.log(req.body.password)
         if (err) console.log(err);
-
         if (!result[0]) {
             res.json({
                 message: "Not found"
             })
         } else {
-            let password_hash = crypto.createHash('sha512').update(req.body.password).digest("hex")
+            const password_hash = crypto.createHash('sha512').update(req.body.password).digest("hex")
             const dataUser = {
                 email: result[0].email,
                 password: result[0].password
-            }            
+            }        
             if (password_hash == result[0].password && req.body.email == result[0].email) {
                 res.json({
                     message: 'user authenticated',

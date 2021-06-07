@@ -17,11 +17,18 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     }, 
+    wallet: {
+        type: Number,
+        required: true
+    }, 
+    transactions: {
+        type: Object,
+        required: true
+    }, 
     create_date: {
         type: Date,
         default: Date.now
     }
-
 });
 
 // Export Contact model
