@@ -1,6 +1,7 @@
 import { createContext, Dispatch, ReactNode, useContext, useEffect, useState } from "react";
 import { useMensages } from "./mapMensages";
 import { Menu } from "../components/Menu/Menu";
+import api from "../services/api";
 
 type LoginData = {
     AccountLogin: () => void;
@@ -13,7 +14,7 @@ type LoginProps = {
 }
 
 export const LoginProvider = ({ children }: LoginProps) => {
-    const { msg, setMsg, allMsg, setAllMsg, msgsCounter, setMode, mode, setInputMsg, setError, setErrorMensage } = useMensages()
+    const { msg, setMsg, allMsg, setAllMsg, msgsCounter, setMode, mode, setInputMsg, setError, setErrorMensage, auth, setAuth } = useMensages()
     const [ emailLogin, setEmailLogin ] = useState<string>()
 
     useEffect(() => {
@@ -31,18 +32,34 @@ export const LoginProvider = ({ children }: LoginProps) => {
         }
     }, [msgsCounter])
     
-    const sendDataLogin = () => {
+    const sendDataLogin = async () => {
         const user = {
             email:  emailLogin,
             password: msg
         }
-        setMsg('')
-        setAllMsg([
-            ...allMsg,
-            "Welcome",
-            <Menu />
-        ])
-        setInputMsg('text');
+
+        api.post(`/${emailLogin}`, user)
+            .then(res => {
+                console.log(res.data.message)
+                const auth = res.data.message
+
+                if (auth == "user authenticated") {
+                    setError(false)
+                    setMsg('')
+                    setAllMsg([
+                        ...allMsg,
+                        "Welcome",
+                        <Menu />
+                    ])
+                    setInputMsg('text');
+                    setAuth(true)
+                } else {
+                    setError(true)
+                    setErrorMensage("this account don't exist")
+                    setInputMsg('text');
+                    emailAccountLogin()
+                }
+            })
     }
 
     const passwordAccountLogin = () => {
@@ -87,8 +104,10 @@ export const LoginProvider = ({ children }: LoginProps) => {
     }
 
     const AccountLogin = () => {
-        emailAccountLogin()
-        setMode('login')
+        if (auth === false) {
+            emailAccountLogin()
+            setMode('login')
+        }
     }
 
     return (

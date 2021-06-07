@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { useMensages } from "./mapMensages";
 import { Menu } from "../components/Menu/Menu";
+import api from "../services/api";
 
 type CreateAccountData = {
     CreateNewAccount: () => void;
@@ -13,10 +14,11 @@ type CreateAccountProps = {
 }
 
 export const CreateAccountProvider = ({ children }: CreateAccountProps) => {
-    const { msg, setMsg, indexMsg, allMsg, setAllMsg, mode, setMode, msgsCounter, setInputMsg, setError, setErrorMensage } = useMensages()
+    const { msg, setMsg, indexMsg, allMsg, setAllMsg, mode, setMode, msgsCounter, setInputMsg, setError, setErrorMensage, auth, setAuth } = useMensages()
     const [ firstName, setFirstName ] = useState<string>()
     const [ lastName, setLastName ] = useState<string>()
     const [ email, setEmail ] = useState<string>()
+    const [ password, setPassword ] = useState<string>()
 
     useEffect(() => {
         if (mode == 'create account') {
@@ -31,6 +33,9 @@ export const CreateAccountProvider = ({ children }: CreateAccountProps) => {
                     passwordCreateAccount();
                     break;
                 case "What's your password?":
+                    walletCreateAccount();
+                    break;
+                case "How much are you want to deposit in your account?":
                     sendDataNewAccount();
                     break;
                 default:
@@ -39,21 +44,52 @@ export const CreateAccountProvider = ({ children }: CreateAccountProps) => {
         }
     }, [msgsCounter])
     
-    const sendDataNewAccount = () => {
-        const user = {
-            firstName: firstName,
-            lastName: lastName,
-            email:  email,
-            password: msg,
-            data: new Date
+    const sendDataNewAccount = async () => {
+        if (msg > 0) {
+            const user = {
+                firstName: firstName,
+                lastName: lastName,
+                email:  email,
+                password: password,
+                wallet: msg,
+            }
+
+            api.post(`/`, user)
+            .then(res => {
+                console.log(res.data.message)
+                const auth = res.data.message
+
+                if (auth == "New user created!") {
+                    setError(false)
+                    setMsg('')
+                    setAllMsg([
+                        ...allMsg,
+                        "Welcome",
+                        <Menu />
+                    ])
+                    setAuth(true)
+                    setInputMsg('text');
+                } else {
+                    setError(true)
+                    setErrorMensage("this account don't exist")
+                    setInputMsg('text');
+                    emailCreateAccount()
+                }
+            })
         }
-        setInputMsg('text')
-        setAllMsg([
-            ...allMsg,
-            "Your account was been created",
-            <Menu />
-        ])
-        setMsg('')
+    }
+
+    const walletCreateAccount = () => {
+        if (allMsg[allMsg.length -2] != "How much you can deposit in your account?") {
+            setInputMsg('number')
+            setPassword(msg)
+            setAllMsg([
+                ...allMsg,
+                "How much are you want to deposit in your account?"
+            ])
+            setMsg('')
+            setError(false)
+        }
     }
 
     const passwordCreateAccount = () => {
@@ -122,8 +158,10 @@ export const CreateAccountProvider = ({ children }: CreateAccountProps) => {
     }
 
     const CreateNewAccount = () => {
-        firstNameCreateAccount()
-        setMode('create account')
+        if (auth === false) {
+            firstNameCreateAccount()
+            setMode('create account')
+        }
     }
 
     return (
