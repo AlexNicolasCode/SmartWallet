@@ -18,12 +18,18 @@ const userSchema = mongoose.Schema({
         required: true
     }, 
     wallet: {
-        type: Number,
-        required: true
-    }, 
+        coin: {
+            type: String,
+            required: true
+        }, 
+        value: {
+            type: Number,
+            required: true
+        }, 
+    },
     transactions: {
         type: Object,
-        required: true
+        required: false
     }, 
     create_date: {
         type: Date,
