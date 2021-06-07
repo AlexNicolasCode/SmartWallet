@@ -1,8 +1,8 @@
-import { useState, ReactNode, createContext, Dispatch, useContext, useEffect, SetStateAction } from "react";
+import { useState, ReactNode, createContext, Dispatch, useContext, useEffect, useRef, MutableRefObject } from "react";
 import { UserMensage } from '../components/styles/styles'
 
 type MapMensagesData = {
-    msg: string;
+    msg: any;
     indexMsg: any;
     allMsg: string[];
     msgsCounter: Number;
@@ -17,6 +17,8 @@ type MapMensagesData = {
     errorMensage: string;
     setError: Dispatch<boolean>;
     setErrorMensage: Dispatch<string>;
+    auth: boolean;
+    setAuth: Dispatch<boolean>
 };
 
 export const MapMensages = createContext({} as MapMensagesData)
@@ -26,14 +28,15 @@ type MapMensagesProps = {
 }
 
 export function MapMensagesProvider({ children }: MapMensagesProps) {
+    const [ auth, setAuth ] = useState(true)
     const [ msg, setMsg ] = useState('')
     const [ inputMsg, setInputMsg ] = useState('text')
     const [ allMsg, setAllMsg ] = useState([])
     const [ indexMsg, setIndexMsg ] = useState<any>()
     const [ mode, setMode ] = useState<string>('')
-    const [ msgsCounter, setMsgsCounter ] = useState<number>(0)
     const [ error, setError ] = useState<boolean>(false)
     const [ errorMensage, setErrorMensage ] = useState<string>()
+    const [ msgsCounter, setMsgsCounter ] = useState(0)
 
     useEffect(() => {
         setIndexMsg(<UserMensage>{msg}</UserMensage>)
@@ -71,7 +74,9 @@ export function MapMensagesProvider({ children }: MapMensagesProps) {
             errorMensage, 
             setErrorMensage,
             error, 
-            setError
+            setError,
+            auth, 
+            setAuth
         }}>
             {children}
         </MapMensages.Provider>
