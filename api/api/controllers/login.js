@@ -2,8 +2,7 @@ const crypto = require('crypto');
 const User = require('../models/UserModel');
 // Handle view user info
 exports.login = function (req, res) {
-    User.find({email: req.params.user_email}, async (err, result) => {
-        console.log(req.body.password)
+    User.find({email: req.body.email}, (err, result) => {
         if (err) console.log(err);
         if (!result[0]) {
             res.json({
