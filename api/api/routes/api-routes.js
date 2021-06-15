@@ -21,23 +21,32 @@ const transactions = require('../controllers/transactions');
 const wallet = require('../controllers/wallet');
 // to send money
 const sendMoney = require('../controllers/sendMoney');
+// to send money
+const deposit = require('../controllers/Deposit');
+// to send money
+const withdrawMoney = require('../controllers/WithdrawMoney');
+// to send money
+const coin = require('../controllers/newCoin');
 
 // User routes
 router.route('/users')
     .get(allAccounts.index)
     .post(newAccount.new);
-router.route('/users/:user_email')
+router.route('/users/login')
     .post(login.login)
     .patch(update.update)
     .put(update.update)
     .delete(deleteAccount.delete);
-router.route('/users/trasactions/:user_email')
+router.route('/users/trasactions/')
     .get(transactions.transactions)
-    .post(transactions.newTransactions);
-router.route('/users/wallet/:user_email')
+router.route('/users/wallet/')
     .get(wallet.wallet)
-    .post(wallet.newCoin);
-router.route('/users/sendMoney/:user_email')
+    .post(coin.newCoin);
+router.route('/users/withdraw-money/')
+    .post(withdrawMoney.withdraw);
+router.route('/users/deposit/')
+    .post(deposit.deposit);
+router.route('/users/sendMoney/')
     .post(sendMoney.sendMoney);
 // Export API routes
 module.exports = router;
