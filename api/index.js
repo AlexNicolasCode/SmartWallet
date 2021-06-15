@@ -18,9 +18,9 @@ else
 
 
 // rates update
-const rateDb = require('./ratesdb.js')
-rateDb.newCheckRates()
-setInterval(rateDb.newCheckRates(), 86400000)
+const rateDb = require('./api/controllers/ratesdb.js');
+rateDb.newCheckRates();
+setInterval(rateDb.newCheckRates, 86400000);
 
 app.use(cors({
     origin: 'http://localhost:3000'
