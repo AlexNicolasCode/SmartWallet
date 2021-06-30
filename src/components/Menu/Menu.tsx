@@ -27,7 +27,6 @@ export const Menu = () => {
             <OptionsBtn onClick={newDeposit}>Deposit</OptionsBtn><br />
             <OptionsBtn onClick={newWithdrawMoney}>Withdraw Money</OptionsBtn><br />
             <OptionsBtn onClick={seeTransactions}>See Your Transactions</OptionsBtn><br />
-            <OptionsBtn onClick={setNewCoin}>Define A New Default Coin</OptionsBtn><br />
             <OptionsBtn onClick={Logout}>Logout</OptionsBtn><br />
         </>
 
