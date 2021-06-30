@@ -1,10 +1,12 @@
 import '../../styles/globals.css'
-import { CreateAccountProvider } from '../contexts/CreateAccount'
-import { DepositProvider } from '../contexts/Deposit'
-import { LoginProvider } from '../contexts/login'
-import { MapMensagesProvider } from '../contexts/mapMensages'
-import { WalletProvider } from '../contexts/SeeWallet'
-import { WithdrawMoneyProvider } from '../contexts/WithdrawMoney'
+import { CreateAccountProvider } from '../contexts/user/CreateAccount'
+import { DepositProvider } from '../contexts/transactions/Deposit'
+import { LoginProvider } from '../contexts/user/login'
+import { MapMensagesProvider } from '../contexts/messages/mapMensages'
+import { NewDefaultCoinProvider } from '../contexts/transactions/newDefaultCoin'
+import { WalletProvider } from '../contexts/transactions/SeeWallet'
+import { WithdrawMoneyProvider } from '../contexts/transactions/WithdrawMoney'
+import { SeeTransactionsProvider } from '../contexts/transactions/SeeTransactions'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -14,7 +16,11 @@ function MyApp({ Component, pageProps }) {
           <WalletProvider>
             <DepositProvider>
               <WithdrawMoneyProvider>
-                <Component {...pageProps} />
+               <NewDefaultCoinProvider>
+                  <SeeTransactionsProvider>
+                    <Component {...pageProps} />
+                  </SeeTransactionsProvider>
+                </NewDefaultCoinProvider>
               </WithdrawMoneyProvider>
             </DepositProvider>
           </WalletProvider>
