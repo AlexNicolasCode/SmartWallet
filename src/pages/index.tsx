@@ -1,20 +1,32 @@
-import { useCreateAccount } from '../contexts/CreateAccount'
-import { useLogin } from '../contexts/login'
-import { useMensages } from '../contexts/mapMensages'
+import Head from 'next/head'
+import { useCreateAccount } from '../contexts/user/CreateAccount'
+import { useLogin } from '../contexts/user/login'
+import { useMensages } from '../contexts/messages/mapMensages'
 import { H1, Chat, DefaultMensage, Input, ButtonSend, OptionsBtn, Sender } from '../components/styles/styles'
-// import styles from '../styles/Home.module.css'
+import { useEffect, useRef } from 'react'
 
 export default function Home() {
   const { msg, allMsg, setMsg, addNewMensage, inputMsg, error, errorMensage } = useMensages()
   const { AccountLogin } = useLogin()
   const { CreateNewAccount } = useCreateAccount()
 
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [allMsg]);
+
   return (
     <div>
-      <header>
-        <H1><strong>Smart</strong>Wallet</H1>
-      </header>
+      <Head>
+        <title>SmartWallet</title>
+      </Head>
       <main>
+        <H1><strong>Smart</strong>Wallet</H1>
         <Chat>
           <DefaultMensage>Hi, I'm SmartCoin</DefaultMensage>
           <DefaultMensage>
@@ -24,6 +36,7 @@ export default function Home() {
           {allMsg.map((prop, index) => (
             <DefaultMensage key={index}>{prop}</DefaultMensage>
           ))}
+          <div ref={messagesEndRef} />
         </Chat>
         <Sender>
           <Input type={inputMsg} value={msg} onChange={event => setMsg(event.target.value)}/>
