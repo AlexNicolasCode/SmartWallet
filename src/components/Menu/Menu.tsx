@@ -1,17 +1,23 @@
-import { useDeposit } from "../../contexts/Deposit"
-import { useMensages } from "../../contexts/mapMensages"
-import { useWallet } from "../../contexts/SeeWallet"
-import { useWithdrawMoney } from "../../contexts/WithdrawMoney"
+import { useDeposit } from "../../contexts/transactions/Deposit"
+import { useMensages } from "../../contexts/messages/mapMensages"
+import { useDefaultCoin } from "../../contexts/transactions/newDefaultCoin"
+import { useSeeTransactions } from "../../contexts/transactions/SeeTransactions"
+import { useWallet } from "../../contexts/transactions/SeeWallet"
+import { useWithdrawMoney } from "../../contexts/transactions/WithdrawMoney"
 import { OptionsBtn } from "../styles/styles"
 
 export const Menu = () => {
-    const { setAuth } = useMensages()
+    const { setAuth, setUserEmail, setAllMsg } = useMensages()
     const { seeWallet } = useWallet()
     const { newDeposit } = useDeposit()
     const { newWithdrawMoney } = useWithdrawMoney()
+    const { setNewCoin } = useDefaultCoin()
+    const { seeTransactions } = useSeeTransactions()
 
     const Logout = () => {
+        setAllMsg([])
         setAuth(false)
+        setUserEmail('')
     }
 
     return (
@@ -20,6 +26,8 @@ export const Menu = () => {
             <OptionsBtn onClick={seeWallet}>See My Wallet</OptionsBtn><br />
             <OptionsBtn onClick={newDeposit}>Deposit</OptionsBtn><br />
             <OptionsBtn onClick={newWithdrawMoney}>Withdraw Money</OptionsBtn><br />
+            <OptionsBtn onClick={seeTransactions}>See Your Transactions</OptionsBtn><br />
+            <OptionsBtn onClick={setNewCoin}>Define A New Default Coin</OptionsBtn><br />
             <OptionsBtn onClick={Logout}>Logout</OptionsBtn><br />
         </>
 
