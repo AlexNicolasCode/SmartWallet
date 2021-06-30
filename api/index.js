@@ -18,7 +18,7 @@ else
 
 
 // rates update
-const rateDb = require('./api/controllers/ratesdb.js');
+const rateDb = require('./api/rates/ratesdb');
 rateDb.newCheckRates();
 setInterval(rateDb.newCheckRates, 86400000);
 

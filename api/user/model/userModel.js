@@ -3,28 +3,28 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     firstName: {
         type: String,
-        required: true
+        required: false
     },
     lastName: {
         type: String,
-        required: true
+        required: false
     },
     email: {
         type: String,
-        required: true
+        required: false
     },
     password: {
         type: String,
-        required: true
+        required: false
     }, 
     wallet: {
         coin: {
             type: String,
-            required: true
+            required: false
         }, 
         value: {
-            type: Number,
-            required: true
+            type: String,
+            required: false
         }, 
     },
     transactions: {

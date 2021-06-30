@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const User = require('../models/UserModel');
+const User = require('../model/userModel');
 // Handle view user info
 exports.login = function (req, res) {
     User.find({email: req.body.email}, (err, result) => {
@@ -16,12 +16,12 @@ exports.login = function (req, res) {
             }        
             if (password_hash == result[0].password && req.body.email == result[0].email) {
                 res.json({
-                    message: 'user authenticated',
+                    auth: true,
                     data: dataUser
                 });
             } else {
                 res.send({
-                    message: "user invalid"
+                    auth: false
                 })
             }
         }

@@ -1,4 +1,4 @@
-const User = require('../models/UserModel');
+const User = require('../model/userModel');
 // Handle index actions
 exports.index = (req, res) => {
     User.get((err, result) => {

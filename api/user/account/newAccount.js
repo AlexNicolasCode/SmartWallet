@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const User = require('../models/UserModel');
+const User = require('../model/userModel');
 // Handle create user actions
 exports.new = function (req, res) {
     User.find({email: req.body.email}, (err, result) => {
@@ -25,7 +25,7 @@ exports.new = function (req, res) {
                     throw err;
                 } else {
                     res.json({
-                        message: 'New user created!',
+                        auth: true,
                         data: dataUser
                     });
                     console.log(result)
@@ -34,7 +34,7 @@ exports.new = function (req, res) {
             })
         } else {
             res.send({
-                message: "this user already been used"
+                auth: false
             })
         }
     });

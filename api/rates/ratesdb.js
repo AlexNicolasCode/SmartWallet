@@ -1,6 +1,6 @@
 const request = require('request')
 const cheerio = require('cheerio')
-const Rate = require('../models/ratesModel')
+const Rate = require('./ratesModel')
 
 const usdToBrl = {
   from: "USD",
