@@ -1,7 +1,7 @@
 import { createContext, Dispatch, ReactNode, useContext, useEffect, useState } from "react";
-import { useMensages } from "./mapMensages";
-import { Menu } from "../components/Menu/Menu";
-import api from "../services/api";
+import { useMensages } from "../messages/mapMensages";
+import { Menu } from "../../components/Menu/Menu";
+import api from "../../services/api";
 
 type LoginData = {
     AccountLogin: () => void;
@@ -14,36 +14,35 @@ type LoginProps = {
 }
 
 export const LoginProvider = ({ children }: LoginProps) => {
-    const { msg, setMsg, allMsg, setAllMsg, msgsCounter, setMode, mode, setInputMsg, setError, setErrorMensage, auth, setAuth } = useMensages()
-    const [ emailLogin, setEmailLogin ] = useState<string>()
-
-    useEffect(() => {
-        if (mode == 'login') {
-            switch (allMsg[allMsg.length -2]) {
-                case "What's your email?":
-                    passwordAccountLogin();
-                    break;
-                case "What's your password?":
-                    sendDataLogin();
-                    break;
-                default:
-                    return;
-            }
-        }
-    }, [msgsCounter])
+    const { 
+        msg,
+        setMsg, 
+        allMsg, 
+        setAllMsg, 
+        msgsCounter, 
+        setMode, 
+        mode, 
+        setInputMsg, 
+        setError, 
+        setErrorMensage, 
+        auth, 
+        setAuth,
+        userEmail, 
+        setUserEmail
+    } = useMensages()
     
-    const sendDataLogin = async () => {
+    const sendDataLogin = () => {
         const user = {
-            email:  emailLogin,
+            email:  userEmail,
             password: msg
         }
 
-        api.post(`/${emailLogin}`, user)
+        api.post(`/login`, user)
             .then(res => {
-                console.log(res.data.message)
-                const auth = res.data.message
+                console.log(res.data.auth)
+                const auth = res.data.auth
 
-                if (auth == "user authenticated") {
+                if (auth) {
                     setError(false)
                     setMsg('')
                     setAllMsg([
@@ -53,19 +52,22 @@ export const LoginProvider = ({ children }: LoginProps) => {
                     ])
                     setInputMsg('text');
                     setAuth(true)
+                    setMode('')
                 } else {
                     setError(true)
                     setErrorMensage("this account don't exist")
                     setInputMsg('text');
-                    emailAccountLogin()
+                    AccountLogin()
                 }
+                setMsg('')
             })
     }
 
     const passwordAccountLogin = () => {
-        if (allMsg[allMsg.length -2] != "What's your password?" && validateEmail(msg)) {
+        console.log("batata")
+        if (allMsg[allMsg.length -1] != "What's your password?" && validateEmail(msg)) {
             setInputMsg('password')
-            setEmailLogin(msg)
+            setUserEmail(msg)
             setAllMsg([
                 ...allMsg,
                 "What's your password?",
@@ -74,15 +76,7 @@ export const LoginProvider = ({ children }: LoginProps) => {
             setMsg('')
         }
 
-        if (!validateEmail(msg)) {
-            setAllMsg([
-                ...allMsg,
-                "What's your email?"
-            ])
-            setError(true)
-            setErrorMensage('this email is not valid')
-            setMsg('')
-        }
+        !validateEmail(msg) ?? AccountLogin
     }
 
     const validateEmail = (email) => {
@@ -109,6 +103,18 @@ export const LoginProvider = ({ children }: LoginProps) => {
             setMode('login')
         }
     }
+
+    const loginManager = {
+        "What's your email?": passwordAccountLogin,
+        "What's your password?": sendDataLogin
+    }
+
+    useEffect(() => {
+        if (mode == 'login') {
+            console.log(allMsg[allMsg.length -2])
+            return loginManager[allMsg[allMsg.length -2]]()
+        }
+    }, [msgsCounter])
 
     return (
         <Login.Provider value={{

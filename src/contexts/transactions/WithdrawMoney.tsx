@@ -1,7 +1,7 @@
-import { createContext, Dispatch, ReactNode, useContext, useEffect, useState } from "react";
-import { Menu } from "../components/Menu/Menu";
-import { useMensages } from "../contexts/mapMensages";
-import { api } from "../pages/api/api";
+import { createContext, ReactNode, useContext, useEffect } from "react";
+import { Menu } from "../../components/Menu/Menu";
+import { useMensages } from "../messages/mapMensages";
+import { api } from "../../services/api";
 
 type WithdrawMoneyData = {
     newWithdrawMoney: () => void;
@@ -14,22 +14,21 @@ type WithdrawMoneyProps = {
 }
 
 export const WithdrawMoneyProvider = ({ children }: WithdrawMoneyProps) => {
-    const { msg, allMsg, setAllMsg, msgsCounter, setInputMsg} = useMensages()    
+    const { msg, allMsg, setAllMsg, msgsCounter, setInputMsg, userEmail} = useMensages()    
 
     useEffect(() => {
-        if (allMsg[allMsg.length -2] == "How much can you to deposit?") {
+        if (allMsg[allMsg.length -2] == "How much money do you want to withdraw?") {
             sendData();
         }
     }, [msgsCounter])
 
     const sendData = () => {
-        if (msg[msg] != 0) {
-            api.post(`/users/${user.id}`, { withdrawValue: msg });
-            api.get(`/users/${user.id}`)
+        if (msg > 0) {
+            api.post(`/withdraw-money`, { email: userEmail, value: msg })
                 .then(res => {     
                     setAllMsg([
-                        allMsg,
-                        `${user.coinIcon} ${msg} was been withdraw of your wallet`,
+                        ...allMsg,
+                        res.data.message,
                         <Menu />
                     ])
                     setInputMsg("text")
@@ -39,7 +38,7 @@ export const WithdrawMoneyProvider = ({ children }: WithdrawMoneyProps) => {
 
     const newWithdrawMoney = () => {
         setAllMsg([
-            allMsg,
+            ...allMsg,
             "How much money do you want to withdraw?",
         ])
         setInputMsg("number")

@@ -1,5 +1,5 @@
 import { useState, ReactNode, createContext, Dispatch, useContext, useEffect, useRef, MutableRefObject } from "react";
-import { UserMensage } from '../components/styles/styles'
+import { UserMensage } from '../../components/styles/styles'
 
 type MapMensagesData = {
     msg: any;
@@ -19,6 +19,8 @@ type MapMensagesData = {
     setErrorMensage: Dispatch<string>;
     auth: boolean;
     setAuth: Dispatch<boolean>
+    userEmail: string;
+    setUserEmail: Dispatch<string>
 };
 
 export const MapMensages = createContext({} as MapMensagesData)
@@ -28,7 +30,8 @@ type MapMensagesProps = {
 }
 
 export function MapMensagesProvider({ children }: MapMensagesProps) {
-    const [ auth, setAuth ] = useState(true)
+    const [ auth, setAuth ] = useState(false)
+    const [ userEmail, setUserEmail ] = useState('')
     const [ msg, setMsg ] = useState('')
     const [ inputMsg, setInputMsg ] = useState('text')
     const [ allMsg, setAllMsg ] = useState([])
@@ -76,7 +79,9 @@ export function MapMensagesProvider({ children }: MapMensagesProps) {
             error, 
             setError,
             auth, 
-            setAuth
+            setAuth,
+            userEmail, 
+            setUserEmail
         }}>
             {children}
         </MapMensages.Provider>

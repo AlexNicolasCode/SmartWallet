@@ -1,7 +1,7 @@
 import { createContext, Dispatch, ReactNode, useContext, useEffect, useState } from "react";
-import { Menu } from "../components/Menu/Menu";
-import { useMensages } from "../contexts/mapMensages";
-import { api } from "../pages/api/api";
+import { Menu } from "../../components/Menu/Menu";
+import { useMensages } from "../messages/mapMensages";
+import { api } from "../../services/api";
 
 type DepositData = {
     newDeposit: () => void;
@@ -14,8 +14,8 @@ type DepositProps = {
 }
 
 export const DepositProvider = ({ children }: DepositProps) => {
-    const { msg, allMsg, setAllMsg, msgsCounter, setInputMsg} = useMensages()    
-
+    const { msg, setMsg, allMsg, setAllMsg, msgsCounter, setInputMsg, userEmail} = useMensages()  
+    
     useEffect(() => {
         if (allMsg[allMsg.length -2] == "How much can you to deposit?") {
             sendData();
@@ -23,23 +23,23 @@ export const DepositProvider = ({ children }: DepositProps) => {
     }, [msgsCounter])
 
     const sendData = () => {
-        if (msg[msg] != 0) {
-            api.post(`/users/${user.id}`, { depositValue: msg });
-            api.get(`/users/${user.id}`)
+        if (msg > 0) {
+            api.post(`/deposit`, { email: userEmail, value: msg })
                 .then(res => {     
                     setAllMsg([
-                        allMsg,
-                        `${res.coinIcon} ${msg} was been deposited in your wallet`,
+                        ...allMsg,
+                        res.data.message,
                         <Menu />
                     ])
                     setInputMsg("text")
                 })
         }
+        setMsg('')
     }
 
-    const newDeposit = async () => {
-        await setAllMsg([
-            allMsg,
+    const newDeposit = () => {
+        setAllMsg([
+            ...allMsg,
             "How much can you to deposit?",
         ])
         setInputMsg("number")
