@@ -15,7 +15,7 @@ exports.new = function (req, res) {
                     coin: "USD",
                     value: req.body.wallet
                 },
-                transactions: {},
+                transactions: [],
                 date: new Date
             }
         
